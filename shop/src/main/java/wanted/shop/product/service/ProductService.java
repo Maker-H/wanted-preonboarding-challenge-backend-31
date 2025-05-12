@@ -1,22 +1,21 @@
 package wanted.shop.product.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wanted.shop.brand.domain.entity.Brand;
 import wanted.shop.brand.domain.entity.BrandId;
-import wanted.shop.brand.respository.BrandRepository;
+import wanted.shop.category.domain.entity.Category;
+import wanted.shop.category.domain.entity.CategoryId;
 import wanted.shop.product.domain.entity.Product;
+import wanted.shop.product.domain.entity.ProductTag;
 import wanted.shop.product.dto.ProductCreateRequest;
 import wanted.shop.product.dto.ProductCreateResponse;
 import wanted.shop.product.respository.ProductRepository;
 import wanted.shop.seller.domain.entity.Seller;
 import wanted.shop.seller.domain.entity.SellerId;
-import wanted.shop.seller.respository.SellerRepository;
 import wanted.shop.tag.domain.entity.Tag;
 import wanted.shop.tag.domain.entity.TagId;
-import wanted.shop.tag.respository.TagRepository;
 
 import java.util.List;
 
@@ -37,11 +36,28 @@ public class ProductService {
         Brand brand = productReferenceService.getBrand(brandId);
 
         List<TagId> tagIds = request.getTagIds();
-        List<Tag> tags = productReferenceService.getTags(tagIds);
+        List<ProductTag> productTags = productReferenceService.getProductTags(tagIds);
 
-        Product product = request.toProduct(seller, brand, tags, );
+        //TODO:
+        List<CategoryId> categoryIds = request.getCategoryIds();
+        List<Category> categories = productReferenceService.getCategories(categoryIds);
+
+        Product product = Product.create(
+                seller,
+                brand,
+                productTags,
+                request.toProductStatus(),
+                request.toProductDetail(),
+                request.toProductPrice(),
+                request.toProductImages(),
+                categories,
+                request.toProductCategories(),
+                request.toProductData(),
+                request.toProductOptionGroup()
+        );
 
         productRepository.save(product);
+
         return null;
     }
 

@@ -4,13 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import wanted.shop.brand.domain.entity.Brand;
 import wanted.shop.brand.domain.entity.BrandId;
-import wanted.shop.category.domain.entity.Category;
+import wanted.shop.category.domain.entity.CategoryId;
 import wanted.shop.product.domain.entity.*;
-import wanted.shop.seller.domain.entity.Seller;
 import wanted.shop.seller.domain.entity.SellerId;
-import wanted.shop.tag.domain.entity.Tag;
 import wanted.shop.tag.domain.entity.TagId;
 
 import java.math.BigDecimal;
@@ -23,6 +20,7 @@ import java.util.Map;
 public class ProductCreateRequest {
 
     private String name;
+
     private String slug;
 
     @JsonProperty("short_description")
@@ -30,6 +28,10 @@ public class ProductCreateRequest {
 
     @JsonProperty("full_description")
     private String fullDescription;
+
+    public ProductData toProductData() {
+        return new ProductData(this.name, this.slug, this.shortDescription, this.fullDescription);
+    }
 
     @JsonProperty("seller_id")
     private Long sellerId;
@@ -47,15 +49,27 @@ public class ProductCreateRequest {
 
     private String status;
 
-    private Detail detail;
-    private Price price;
+    public ProductStatus toProductStatus() {
+        return new ProductStatus(status);
+    }
 
-    private List<ProductCategoryRequest> categories;
+    @JsonProperty("categories")
+    private List<CategoryRequest> categories;
 
-    @JsonProperty("option_groups")
-    private List<OptionGroup> optionGroups;
-
-    private List<Image> images;
+    //TODO:
+//    public List<CategoryId> getCategoryIds() {
+//        return categories.stream().map(productCategory -> {
+//            return new CategoryId(productCategory.getCategoryId());
+//        }).toList();
+//    }
+//
+//    public List<ProductCategory> toProductCategories() {
+//        return categories.stream().map(category -> {
+//            return ProductCategory.builder()
+//                    .isPrimary(category.isPrimary())
+//                    .build();
+//        }).toList();
+//    }
 
     @JsonProperty("tags")
     private List<Long> tagIds;
@@ -64,41 +78,25 @@ public class ProductCreateRequest {
         return tagIds.stream().map(TagId::new).toList();
     }
 
-    public Product toProduct(Seller seller, Brand brand, List<Tag> tags, List<Category> categories) {
-        Product product = Product.builder()
-                .productData(new ProductData(name, slug, shortDescription, fullDescription))
-                .status(status)
-                .productTimestamps(ProductTimestamps.createNow())
-                .seller(seller)
-                .brand(brand)
-                .build();
 
-        product.setProductDetail(toDetail(product));
-        product.setProductPrice(toPrice(product));
-        product.addTags(toProductTags(product, tags));
-        product.addImages(toImages(product));
-        product.addOptionGroups(toOptionGroups(product));
-        product.addProductCategories(toProductCategories(product, categories));
+    private Detail detail;
 
-        return product;
-    }
-
-    private ProductDetail toDetail(Product product) {
+    public ProductDetail toProductDetail() {
         return ProductDetail.builder()
-                .product(product)
                 .weight(detail.getWeight())
-                .dimensions(detail.getDimensions().toString()) // 혹은 JSON 변환
+                .dimensions(detail.getDimensions().toString())
                 .materials(detail.getMaterials())
                 .countryOfOrigin(detail.getCountryOfOrigin())
                 .warrantyInfo(detail.getWarrantyInfo())
                 .careInstructions(detail.getCareInstructions())
-                .additionalInfo(detail.getAdditionalInfo().toString()) // JSONB 문자열
+                .additionalInfo(detail.getAdditionalInfo().toString())
                 .build();
     }
 
-    private ProductPrice toPrice(Product product) {
+    private Price price;
+
+    public ProductPrice toProductPrice() {
         return ProductPrice.builder()
-                .product(product)
                 .basePrice(price.getBasePrice())
                 .salePrice(price.getSalePrice())
                 .costPrice(price.getCostPrice())
@@ -107,60 +105,47 @@ public class ProductCreateRequest {
                 .build();
     }
 
-    private List<ProductTag> toProductTags(Product product, List<Tag> tags) {
-        return tags.stream()
-                .map(tag -> ProductTag.builder()
-                        .product(product)
-                        .tag(tag)
-                        .build())
-                .toList();
-    }
+    private List<Image> images;
 
-    private List<ProductImage> toImages(Product product) {
+    public List<ProductImage> toProductImages() {
         return images.stream()
                 .map(img -> ProductImage.builder()
-                        .product(product)
                         .url(img.getUrl())
                         .altText(img.getAltText())
                         .isPrimary(img.isPrimary())
                         .displayOrder(img.getDisplayOrder())
-                        .optionId(img.getOptionId())
                         .build())
                 .toList();
     }
 
-    private List<ProductOptionGroup> toOptionGroups(Product product) {
-        return optionGroups.stream()
-                .map(group -> {
-                    ProductOptionGroup og = ProductOptionGroup.builder()
-                            .product(product)
-                            .name(group.getName())
-                            .displayOrder(group.getDisplayOrder())
-                            .build();
 
-                    List<ProductOption> options = group.getOptions().stream()
-                            .map(opt -> ProductOption.builder()
-                                    .optionGroup(og)
-                                    .name(opt.getName())
-                                    .additionalPrice(opt.getAdditionalPrice())
-                                    .sku(opt.getSku())
-                                    .stock(opt.getStock())
-                                    .displayOrder(opt.getDisplayOrder())
-                                    .build())
-                            .toList();
+    @JsonProperty("option_groups")
+    private List<OptionGroup> optionGroups;
 
-                    og.setOptions(options);
-                    return og;
-                }).toList();
-    }
+    public List<ProductOptionGroup> toProductOptionGroup() {
 
-    private List<ProductCategory> toProductCategories(Product product, List<Category> categories) {
-        return categories.stream().map(category -> {
-            return ProductCategory.builder()
-                    .product(product)
-                    .category(category)
-                    .isPrimary(Boolean.FALSE)
+        return optionGroups.stream().map(optionGroup -> {
+
+            List<ProductOption> options = optionGroup.getOptions().stream().map(option -> {
+                return ProductOption.builder()
+                        .name(option.name)
+                        .additionalPrice(option.additionalPrice)
+                        .sku(option.sku)
+                        .stock(option.stock)
+                        .displayOrder(option.displayOrder)
+                        .build();
+            }).toList();
+
+
+            ProductOptionGroup productOptionGroup = ProductOptionGroup.builder()
+                    .displayOrder(optionGroup.displayOrder)
+                    .name(optionGroup.name)
                     .build();
+
+            System.out.println("ProductOptionGroup: " + options.size());
+            productOptionGroup.addOption(options);
+
+            return productOptionGroup;
         }).toList();
     }
 
@@ -199,20 +184,20 @@ public class ProductCreateRequest {
         private BigDecimal basePrice;
 
         @JsonProperty("sale_price")
-        private int salePrice;
+        private BigDecimal salePrice;
 
         @JsonProperty("cost_price")
-        private int costPrice;
+        private BigDecimal costPrice;
 
         private String currency;
 
         @JsonProperty("tax_rate")
-        private int taxRate;
+        private BigDecimal taxRate;
     }
 
     @Getter @Setter
     @NoArgsConstructor
-    public static class ProductCategoryRequest {
+    public static class CategoryRequest {
         @JsonProperty("category_id")
         private Long categoryId;
 
@@ -228,6 +213,7 @@ public class ProductCreateRequest {
         @JsonProperty("display_order")
         private int displayOrder;
 
+        @JsonProperty("options")
         private List<Option> options;
 
         @Getter @Setter

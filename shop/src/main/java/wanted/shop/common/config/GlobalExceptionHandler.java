@@ -30,6 +30,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, WebRequest request) {
+        ex.printStackTrace();
+
 
         ErrorCode httpErrorCode = INTERNAL_ERROR;
         Message message = new Message(ex.getMessage());

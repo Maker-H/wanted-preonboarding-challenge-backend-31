@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import wanted.shop.brand.domain.entity.Brand;
+import wanted.shop.category.domain.entity.Category;
 import wanted.shop.seller.domain.entity.Seller;
 
 import java.util.ArrayList;
@@ -19,20 +20,33 @@ import java.util.List;
 public class Product {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_id_seq")
     @SequenceGenerator(name = "product_id_seq", sequenceName = "products_id_seq", allocationSize = 1)
-    private Long id;
+    private Long productId;
 
-    public ProductId getId() {
-        return new ProductId(this.id);
+    public ProductId getProductId() {
+        return new ProductId(this.productId);
     }
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "shortDescription", column = @Column(name = "short_discription")),
+            @AttributeOverride(name = "fullDescription", column = @Column(name = "full_discription"))
+    })
     private ProductData productData;
 
-    private String status;
+    private String productStatus;
+
+    public ProductStatus getProductStatus() {
+        return new ProductStatus(productStatus);
+    }
 
     @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "createdAt", column = @Column(name = "created_at")),
+            @AttributeOverride(name = "updatedAt", column = @Column(name = "updated_at"))
+    })
     private ProductTimestamps productTimestamps;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -49,40 +63,88 @@ public class Product {
     @OneToOne(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private ProductPrice productPrice;
 
+    @Builder.Default
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductImage> images = new ArrayList<>();
+    private List<ProductImage> productImages = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductOptionGroup> optionGroups = new ArrayList<>();
+    private List<ProductOptionGroup> productOptionGroups = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductCategory> productCategories = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductTag> tags = new ArrayList<>();
+    private List<ProductTag> productTags = new ArrayList<>();
 
     public void setProductDetail(ProductDetail productDetail) {
         this.productDetail = productDetail;
+        productDetail.setProduct(this);
     }
 
-    public void setProductPrice(ProductPrice price) {
-        this.productPrice = price;
-    }
-    public void addTags(List<ProductTag> tags) {
-        this.tags.addAll(tags);
+    public void setProductPrice(ProductPrice productPrice) {
+        this.productPrice = productPrice;
+        productPrice.setProduct(this);
     }
 
-    public void addImages(List<ProductImage> images) {
-        this.images.addAll(images);
+    public void addProductTags(List<ProductTag> productTags) {
+        this.productTags.addAll(productTags);
+        productTags.forEach(tag -> tag.setProduct(this));
     }
 
-    public void addOptionGroups(List<ProductOptionGroup> groups) {
-        this.optionGroups.addAll(groups);
+    public void addProductImages(List<ProductImage> productImages) {
+        this.productImages.addAll(productImages);
+        productImages.forEach(image -> image.setProduct(this));
     }
 
-    public void addProductCategories(List<ProductCategory> groups) {
-        this.productCategories.addAll(groups);
+    public void addProductOptions(List<ProductOptionGroup> productOptionGroups) {
+        this.productOptionGroups.addAll(productOptionGroups);
+        productOptionGroups.forEach(optionGroup -> optionGroup.setProduct(this));
     }
 
+    //TODO:
+
+//    public void addProductCategories(List<ProductCategory> groups, Category category) {
+//        this.productCategories.addAll(groups);
+//        productCategories.forEach(productCategory -> {
+//            productCategory.setProduct(this);
+//            productCategory.setCategory(category);
+//        });
+//    }
+
+    public static Product create(
+            Seller seller,
+            Brand brand,
+            List<ProductTag> productTags,
+            ProductStatus productStatus,
+            ProductDetail productDetail,
+            ProductPrice productPrice,
+            List<ProductImage> productImages,
+//            List<Category> categories,
+//            List<ProductCategory> productCategories,
+            ProductData productData,
+            List<ProductOptionGroup> productOptionGroups
+    ) {
+
+        Product product = Product.builder()
+                .productData(productData)
+                .productStatus(productStatus.getValue())
+                .productTimestamps(ProductTimestamps.createNow())
+                .seller(seller)
+                .brand(brand)
+                .build();
+
+        product.setProductDetail(productDetail);
+        product.setProductPrice(productPrice);
+
+        product.addProductTags(productTags);
+        product.addProductImages(productImages);
+        product.addProductOptions(productOptionGroups);
+//        product.addProductCategories(productCategories, categories);
+
+        return product;
+    }
 }
 

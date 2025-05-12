@@ -3,9 +3,11 @@ package wanted.shop.product.domain.entity;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Embeddable
+@NoArgsConstructor
 @AllArgsConstructor
 public class ProductData {
     private String name;
