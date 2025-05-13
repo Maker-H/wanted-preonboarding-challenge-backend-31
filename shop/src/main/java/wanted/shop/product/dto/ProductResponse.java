@@ -54,6 +54,7 @@ public class ProductResponse {
     @JsonProperty("related_products")
     private List<RelatedProductInfo> relatedProducts;
 
+    //TODO:연관 상품 조회
     public static ProductResponse from(
             Product product,
             Seller seller,
