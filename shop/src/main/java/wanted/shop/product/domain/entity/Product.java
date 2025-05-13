@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import wanted.shop.brand.domain.entity.Brand;
 import wanted.shop.category.domain.entity.Category;
+import wanted.shop.product.dto.ProductCreateResponse;
 import wanted.shop.seller.domain.entity.Seller;
 
 import java.util.ArrayList;
@@ -142,6 +143,16 @@ public class Product {
         product.addProductCategories(productCategories);
 
         return product;
+    }
+
+    public ProductCreateResponse toCreateResponse() {
+        return new ProductCreateResponse(
+                this.productId,
+                this.productData.getName(),
+                this.productData.getSlug(),
+                this.productTimestamps.getCreatedAt(),
+                this.productTimestamps.getUpdatedAt()
+        );
     }
 }
 

@@ -60,9 +60,9 @@ public class ProductService {
                 request.toProductOptionGroup()
         );
 
-        productRepository.save(product);
+        Product savedProduct = productRepository.save(product);
 
-        return null;
+        return savedProduct.toCreateResponse();
     }
 
 
