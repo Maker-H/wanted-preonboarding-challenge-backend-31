@@ -14,13 +14,7 @@ public enum ReviewSortField {
     DELETED_AT("timestamps.deletedAt"),
     RATING("reviewData.rating"),
     TITLE("reviewData.title"),
-    CONTENT("reviewData.content"),
-    HELPFUL_VOTES("helpfulVotes"),
-    VERIFIED_PURCHASE("verifiedPurchase"),
-
-    PRODUCT_ID("productId.value"),
-    USER_ID("user.id"),
-    REVIEW_ID("id");
+    CONTENT("reviewData.content");
 
     private final String path;
 

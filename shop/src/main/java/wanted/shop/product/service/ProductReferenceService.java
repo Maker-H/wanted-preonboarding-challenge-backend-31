@@ -8,9 +8,10 @@ import wanted.shop.brand.respository.BrandRepository;
 import wanted.shop.category.domain.entity.Category;
 import wanted.shop.category.domain.entity.CategoryId;
 import wanted.shop.category.respository.CategoryRepository;
-import wanted.shop.product.domain.entity.ProductOption;
-import wanted.shop.product.domain.entity.ProductOptionId;
 import wanted.shop.product.domain.entity.ProductTag;
+import wanted.shop.review.domain.entity.Review;
+import wanted.shop.review.domain.entity.ReviewId;
+import wanted.shop.review.respository.ReviewRepository;
 import wanted.shop.seller.domain.entity.Seller;
 import wanted.shop.seller.domain.entity.SellerId;
 import wanted.shop.seller.respository.SellerRepository;
@@ -19,6 +20,9 @@ import wanted.shop.tag.domain.entity.TagId;
 import wanted.shop.tag.respository.TagRepository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import wanted.shop.product.domain.entity.ProductId;
+import wanted.shop.product.domain.entity.Product;
 import wanted.shop.review.dto.ReviewDto;
 import wanted.shop.review.dto.ReviewUpdateResponse;
 import wanted.shop.user.domain.User;
@@ -16,20 +16,21 @@ import wanted.shop.user.domain.User;
 public class Review {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "review_id_seq")
     @SequenceGenerator(name = "review_id_seq", sequenceName = "reviews_id_seq", allocationSize = 1)
-    private Long id;
+    private Long reviewId;
 
-    public ReviewId getId() {
-        return new ReviewId(this.id);
+    public ReviewId getReviewId() {
+        return new ReviewId(this.reviewId);
     }
 
-    @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "product_id"))
-    private ProductId productId;
+    @JoinColumn(name = "product_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Product product;
 
-    @ManyToOne
     @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @Embedded
@@ -59,7 +60,7 @@ public class Review {
     }
     public ReviewDto toReviewDto() {
         return ReviewDto.builder()
-                .id(id)
+                .id(reviewId)
                 .user(ReviewDto.UserDto.builder()
                         .id(user.getId().getValue())
                         .name(user.getUserInfo().getName())
@@ -76,11 +77,11 @@ public class Review {
                 .build();
     }
 
-    public static Review create(User user, ProductId productId, ReviewData reviewData) {
+    public static Review create(User user, Product product, ReviewData reviewData) {
         Review review = new Review();
 
         review.user = user;
-        review.productId = productId;
+        review.product = product;
         review.reviewData = reviewData;
         review.verifiedPurchase = true;
         review.helpfulVotes = 0;
@@ -92,7 +93,7 @@ public class Review {
 
     public ReviewUpdateResponse toUpdateResponse() {
         return ReviewUpdateResponse.builder()
-                .id(this.id)
+                .id(this.reviewId)
                 .rating(reviewData.getRating())
                 .title(reviewData.getTitle())
                 .content(reviewData.getContent())

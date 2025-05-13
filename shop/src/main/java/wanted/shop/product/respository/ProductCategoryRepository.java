@@ -2,31 +2,28 @@ package wanted.shop.product.respository;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
-import wanted.shop.product.domain.entity.Image;
 import wanted.shop.product.domain.entity.Product;
 import wanted.shop.product.domain.entity.ProductId;
 import wanted.shop.product.projection.ProductCategoryFlatProjection;
-import wanted.shop.product.projection.ProductOptionFlatProjection;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
-public class ProductRepository {
+public class ProductCategoryRepository {
 
-    private final ProductJpaRepository productJpaRepository;
+    private ProductCategoryJpaRepository jpaRepository;
 
     public Optional<Product> findById(ProductId productId) {
-        return productJpaRepository.findById(productId.getValue());
+        return jpaRepository.findById(productId.getValue());
     }
 
     public Product save(Product product) {
-        return productJpaRepository.save(product);
+        return jpaRepository.save(product);
     }
 
-    public List<ProductOptionFlatProjection> findOptionInfosByProductId(ProductId productId) {
-        return productJpaRepository.findOptionInfoByProductId(productId.getValue());
+    public List<ProductCategoryFlatProjection> findCategoryInfoByProductId(ProductId productId) {
+        return jpaRepository.findCategoryInfoByProductId(productId.getValue());
     }
-
 }

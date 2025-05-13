@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wanted.shop.common.api.Pagination;
+import wanted.shop.product.domain.entity.Product;
 import wanted.shop.product.domain.entity.ProductId;
 import wanted.shop.review.domain.entity.Review;
 import wanted.shop.review.domain.entity.ReviewId;
@@ -23,7 +24,7 @@ import java.util.List;
 public class ReviewService {
 
     private ReviewRepository reviewRepository;
-    private final UserReviewService userReviewService;
+    private final ReviewReferenceService reviewReferenceService;
 
     @Transactional(readOnly = true)
     public ReviewListResponse getReviewsByProductId(ProductId productId, ReviewPageRequest request) {
@@ -39,7 +40,7 @@ public class ReviewService {
         List<ReviewDto> reviewDtoList = result.getContent().stream()
                 .map(Review::toReviewDto)
                 .toList();
-        ReviewSummaryDto reviewSummaryDto = ReviewSummaryDto.from(result.getContent());
+        ReviewRatingDto reviewSummaryDto = ReviewRatingDto.from(result.getContent());
 
         return new ReviewListResponse(reviewDtoList, reviewSummaryDto, pagination);
     }
@@ -55,8 +56,11 @@ public class ReviewService {
 
     @Transactional
     public ReviewDto createReview(ReviewDataRequest reviewDataRequest, UserId userId, ProductId productId) {
-        User user = userReviewService.findOrThrow(userId);
-        Review createdReview = Review.create(user, productId, reviewDataRequest.toReviewData());
+        User user = reviewReferenceService.findOrThrow(userId);
+        Product product = reviewReferenceService.findOrThrow(productId)
+                .orElseThrow(() -> new RuntimeException("productId: " + productId.getValue() + "를 조회할 수 없습니다"));
+
+        Review createdReview = Review.create(user, product, reviewDataRequest.toReviewData());
         Review savedReview = reviewRepository.save(createdReview);
 
         return savedReview.toReviewDto();

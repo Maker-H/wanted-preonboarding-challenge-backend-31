@@ -15,12 +15,12 @@ public class ReviewListResponse {
     private final List<ReviewDto> items;
 
     @JsonProperty("summary")
-    private final ReviewSummaryDto summary;
+    private final ReviewRatingDto summary;
 
     @JsonProperty("pagination")
     private final Pagination pagination;
 
-    public ReviewListResponse(List<ReviewDto> items, ReviewSummaryDto summary, Pagination pagination) {
+    public ReviewListResponse(List<ReviewDto> items, ReviewRatingDto summary, Pagination pagination) {
         this.items = items;
         this.summary = summary;
         this.pagination = pagination;

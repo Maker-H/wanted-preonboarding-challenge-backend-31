@@ -1,7 +1,9 @@
 package wanted.shop.brand.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "brands")
 @Access(AccessType.FIELD)

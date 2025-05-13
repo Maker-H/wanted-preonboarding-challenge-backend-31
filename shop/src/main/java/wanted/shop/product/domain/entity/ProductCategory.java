@@ -2,11 +2,12 @@ package wanted.shop.product.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import wanted.shop.category.domain.entity.Category;
 import wanted.shop.category.domain.entity.CategoryId;
 
-//TODO:
 @Builder
+@Getter
 @Entity
 @Table(name = "product_categories")
 @AllArgsConstructor
@@ -43,7 +44,7 @@ public class ProductCategory {
     }
 
     @Transient
-    @Getter @Setter
+    @Setter
     private CategoryId categoryId;
 
     private Boolean isPrimary;

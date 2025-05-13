@@ -8,6 +8,7 @@ import org.hibernate.annotations.Type;
 import java.math.BigDecimal;
 import java.util.Map;
 
+@Getter
 @Builder
 @Entity
 @Table(name = "product_details")

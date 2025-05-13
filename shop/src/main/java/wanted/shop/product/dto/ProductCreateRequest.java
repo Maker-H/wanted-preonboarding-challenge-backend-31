@@ -101,9 +101,9 @@ public class ProductCreateRequest {
 
     private List<Image> images;
 
-    public List<ProductImage> toProductImages() {
+    public List<wanted.shop.product.domain.entity.Image> toProductImages() {
         return images.stream()
-                .map(img -> ProductImage.builder()
+                .map(img -> wanted.shop.product.domain.entity.Image.builder()
                         .url(img.getUrl())
                         .altText(img.getAltText())
                         .isPrimary(img.isPrimary())

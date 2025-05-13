@@ -1,16 +1,14 @@
 package wanted.shop.category.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Builder
+@Entity
 @Table(name = "categories")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,18 +24,32 @@ public class Category {
         return new CategoryId(categoryId);
     }
 
+    @Getter
     private String name;
 
+    @Getter
     private String slug;
 
+    @Getter
     private String description;
 
+    @Getter
     private String imageUrl;
 
+    @Getter
     private Integer level;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Category parent;
+
+    public CategoryId getParentCategoryId() {
+        if (parent == null) {
+            return null;
+        }
+
+        return parent.getCategoryId();
+    }
+
 
 }

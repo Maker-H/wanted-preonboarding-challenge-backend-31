@@ -1,10 +1,12 @@
 package wanted.shop.seller.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 @Table(name = "sellers")
 public class Seller {

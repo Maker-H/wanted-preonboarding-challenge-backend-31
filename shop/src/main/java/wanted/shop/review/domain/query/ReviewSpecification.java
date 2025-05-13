@@ -4,6 +4,7 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import wanted.shop.product.domain.entity.ProductId;
 
+import wanted.shop.product.domain.entity.Product_;
 import wanted.shop.review.domain.entity.Review;
 import wanted.shop.review.domain.entity.ReviewData_;
 import wanted.shop.review.domain.entity.ReviewTimestamps_;
@@ -18,7 +19,7 @@ public class ReviewSpecification {
 
             List<Predicate> predicates = List.of(
                     cb.equal(
-                            root.get(Review_.productId).get("value"),
+                            root.get(Review_.product).get(Product_.productId),
                             productId.getValue()
                     ),
                     cb.equal(
@@ -39,7 +40,7 @@ public class ReviewSpecification {
 
             List<Predicate> predicates = List.of(
                     cb.equal(
-                            root.get(Review_.productId).get("value"),
+                            root.get(Review_.product).get(Product_.productId),
                             productId.getValue()
                     ),
                     cb.isNull(

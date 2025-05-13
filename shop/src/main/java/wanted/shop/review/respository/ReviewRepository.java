@@ -14,17 +14,17 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ReviewRepository {
 
-    private ReviewDataRepository dataRepository;
+    private ReviewJpaRepository jpaRepository;
 
     public Page<Review> findAll(Specification<Review> spec, Pageable pageable) {
-        return dataRepository.findAll(spec, pageable);
+        return jpaRepository.findAll(spec, pageable);
     }
 
     public Optional<Review> findById(ReviewId reviewId) {
-        return dataRepository.findById(reviewId.getValue());
+        return jpaRepository.findById(reviewId.getValue());
     }
 
     public Review save(Review review) {
-        return dataRepository.save(review);
+        return jpaRepository.save(review);
     }
 }

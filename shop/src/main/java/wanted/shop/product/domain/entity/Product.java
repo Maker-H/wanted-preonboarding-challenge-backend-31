@@ -3,13 +3,13 @@ package wanted.shop.product.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import wanted.shop.brand.domain.entity.Brand;
-import wanted.shop.category.domain.entity.Category;
-import wanted.shop.product.dto.ProductCreateResponse;
+import wanted.shop.review.domain.entity.Review;
 import wanted.shop.seller.domain.entity.Seller;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Builder
 @Entity
 @Table(name = "products")
@@ -27,7 +27,6 @@ public class Product {
         return new ProductId(this.productId);
     }
 
-    @Getter
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "shortDescription", column = @Column(name = "short_description")),
@@ -42,7 +41,6 @@ public class Product {
         return new ProductStatus(productStatus);
     }
 
-    @Getter
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "createdAt", column = @Column(name = "created_at")),
@@ -66,7 +64,7 @@ public class Product {
 
     @Builder.Default
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductImage> productImages = new ArrayList<>();
+    private List<Image> images = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -77,8 +75,12 @@ public class Product {
     private List<ProductCategory> productCategories = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<ProductTag> productTags = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
 
     public void setProductDetail(ProductDetail productDetail) {
         this.productDetail = productDetail;
@@ -95,9 +97,9 @@ public class Product {
         productTags.forEach(tag -> tag.setProduct(this));
     }
 
-    public void addProductImages(List<ProductImage> productImages) {
-        this.productImages.addAll(productImages);
-        productImages.forEach(image -> image.setProduct(this));
+    public void addProductImages(List<Image> images) {
+        this.images.addAll(images);
+        images.forEach(image -> image.setProduct(this));
     }
 
     public void addProductOptions(List<ProductOptionGroup> productOptionGroups) {
@@ -105,9 +107,9 @@ public class Product {
         productOptionGroups.forEach(optionGroup -> optionGroup.setProduct(this));
     }
 
-    public void addProductCategories(List<ProductCategory> groups) {
-        this.productCategories.addAll(groups);
-        productCategories.forEach(productCategory -> {
+    public void addProductCategories(List<ProductCategory> productCategories) {
+        this.productCategories.addAll(productCategories);
+        this.productCategories.forEach(productCategory -> {
             productCategory.setProduct(this);
         });
     }
@@ -119,7 +121,7 @@ public class Product {
             ProductStatus productStatus,
             ProductDetail productDetail,
             ProductPrice productPrice,
-            List<ProductImage> productImages,
+            List<Image> images,
             List<ProductCategory> productCategories,
             ProductData productData,
             List<ProductOptionGroup> productOptionGroups
@@ -137,7 +139,7 @@ public class Product {
         product.setProductPrice(productPrice);
 
         product.addProductTags(productTags);
-        product.addProductImages(productImages);
+        product.addProductImages(images);
         product.addProductOptions(productOptionGroups);
         product.addProductCategories(productCategories);
 

@@ -1,13 +1,11 @@
 package wanted.shop.product.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
+@Getter
 @Builder
 @Entity
 @Table(name = "product_prices")

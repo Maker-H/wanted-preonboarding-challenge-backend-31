@@ -1,29 +1,28 @@
 package wanted.shop.product.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
 @Builder
 @Entity
 @Table(name = "product_images")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProductImage {
+public class Image {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_image_id_seq")
     @SequenceGenerator(name = "product_image_id_seq", sequenceName = "product_images_id_seq", allocationSize = 1)
-    private Long id;
+    private Long imageId;
 
-    public ImageId getId() {
-        return new ImageId(this.id);
+    public ImageId getImageId() {
+        return new ImageId(this.imageId);
     }
 
-    @ManyToOne
     @JoinColumn(name = "product_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
     public void setProduct(Product product) {
@@ -32,8 +31,8 @@ public class ProductImage {
         }
     }
 
-    @ManyToOne
     @JoinColumn(name = "option_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private ProductOption option;
 
     private String url;
