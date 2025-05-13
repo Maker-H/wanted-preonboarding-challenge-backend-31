@@ -54,22 +54,16 @@ public class ProductCreateRequest {
     }
 
     @JsonProperty("categories")
-    private List<CategoryRequest> categories;
+    private List<ProductCategoryRequest> categories;
 
-    //TODO:
-//    public List<CategoryId> getCategoryIds() {
-//        return categories.stream().map(productCategory -> {
-//            return new CategoryId(productCategory.getCategoryId());
-//        }).toList();
-//    }
-//
-//    public List<ProductCategory> toProductCategories() {
-//        return categories.stream().map(category -> {
-//            return ProductCategory.builder()
-//                    .isPrimary(category.isPrimary())
-//                    .build();
-//        }).toList();
-//    }
+    public List<ProductCategory> toProductCategories() {
+        return categories.stream().map(category -> {
+            return ProductCategory.builder()
+                    .isPrimary(category.isPrimary())
+                    .categoryId(new CategoryId(category.categoryId))
+                    .build();
+        }).toList();
+    }
 
     @JsonProperty("tags")
     private List<Long> tagIds;
@@ -84,12 +78,12 @@ public class ProductCreateRequest {
     public ProductDetail toProductDetail() {
         return ProductDetail.builder()
                 .weight(detail.getWeight())
-                .dimensions(detail.getDimensions().toString())
+                .dimensions(detail.getDimension())
                 .materials(detail.getMaterials())
                 .countryOfOrigin(detail.getCountryOfOrigin())
                 .warrantyInfo(detail.getWarrantyInfo())
                 .careInstructions(detail.getCareInstructions())
-                .additionalInfo(detail.getAdditionalInfo().toString())
+                .additionalInfo(detail.getAdditionalInfo())
                 .build();
     }
 
@@ -142,7 +136,6 @@ public class ProductCreateRequest {
                     .name(optionGroup.name)
                     .build();
 
-            System.out.println("ProductOptionGroup: " + options.size());
             productOptionGroup.addOption(options);
 
             return productOptionGroup;
@@ -152,8 +145,19 @@ public class ProductCreateRequest {
     @Getter @Setter
     @NoArgsConstructor
     public static class Detail {
-        private String weight;
-        private Dimension dimensions;
+        private BigDecimal weight;
+
+        @JsonProperty("dimensions")
+        private Dimension dimension;
+
+        public ProductDetailDimension getDimension() {
+            return ProductDetailDimension.builder()
+                    .depth(dimension.depth)
+                    .height(dimension.height)
+                    .width(dimension.width)
+                    .build();
+        }
+
         private String materials;
 
         @JsonProperty("country_of_origin")
@@ -197,7 +201,7 @@ public class ProductCreateRequest {
 
     @Getter @Setter
     @NoArgsConstructor
-    public static class CategoryRequest {
+    public static class ProductCategoryRequest {
         @JsonProperty("category_id")
         private Long categoryId;
 

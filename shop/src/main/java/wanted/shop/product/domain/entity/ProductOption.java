@@ -16,9 +16,14 @@ import java.math.BigDecimal;
 public class ProductOption {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_option_id_seq")
     @SequenceGenerator(name = "product_option_id_seq", sequenceName = "product_options_id_seq", allocationSize = 1)
-    private Long id;
+    private Long productOptionId;
+
+    public ProductOptionId getProductOptionId() {
+        return new ProductOptionId(productOptionId);
+    }
 
     @ManyToOne
     @JoinColumn(name = "option_group_id")

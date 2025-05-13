@@ -1,7 +1,12 @@
 package wanted.shop.product.domain.entity;
 
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
+
+import java.math.BigDecimal;
+import java.util.Map;
 
 @Builder
 @Entity
@@ -25,11 +30,24 @@ public class ProductDetail {
         }
     }
 
-    private String weight;
-    private String dimensions;
+    private BigDecimal weight;
+
+    @Type(JsonType.class)
+    private ProductDetailDimension dimensions;
+
+    @Column(name = "materials")
     private String materials;
+
+    @Column(name = "country_of_origin")
     private String countryOfOrigin;
+
+    @Column(name = "warranty_info")
     private String warrantyInfo;
+
+    @Column(name = "care_instructions")
     private String careInstructions;
-    private String additionalInfo;
+
+    @Type(JsonType.class)
+    @Column(name = "additional_info")
+    private Map<String, Object> additionalInfo;
 }

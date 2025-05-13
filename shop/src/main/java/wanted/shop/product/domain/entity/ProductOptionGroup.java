@@ -1,10 +1,7 @@
 package wanted.shop.product.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +14,14 @@ import java.util.List;
 public class ProductOptionGroup {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_option_group_id_seq")
     @SequenceGenerator(name = "product_option_group_id_seq", sequenceName = "product_option_groups_id_seq", allocationSize = 1)
-    private Long id;
+    private Long productOptionId;
+
+    public ProductOptionGroupId getProductOptionId() {
+        return new ProductOptionGroupId(productOptionId);
+    }
 
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -32,6 +34,7 @@ public class ProductOptionGroup {
     }
 
     private String name;
+
     private Integer displayOrder;
 
     @Builder.Default
@@ -42,5 +45,9 @@ public class ProductOptionGroup {
         this.productOptions.addAll(productOptions);
         productOptions.forEach(productOption -> productOption.setProductOptionGroup(this));
     }
+
+    @Transient
+    @Getter @Setter
+    private List<ProductOptionGroupId> productOptionGroupIds;
 }
 

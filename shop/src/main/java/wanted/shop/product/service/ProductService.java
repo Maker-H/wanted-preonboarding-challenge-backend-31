@@ -8,6 +8,7 @@ import wanted.shop.brand.domain.entity.BrandId;
 import wanted.shop.category.domain.entity.Category;
 import wanted.shop.category.domain.entity.CategoryId;
 import wanted.shop.product.domain.entity.Product;
+import wanted.shop.product.domain.entity.ProductCategory;
 import wanted.shop.product.domain.entity.ProductTag;
 import wanted.shop.product.dto.ProductCreateRequest;
 import wanted.shop.product.dto.ProductCreateResponse;
@@ -38,9 +39,13 @@ public class ProductService {
         List<TagId> tagIds = request.getTagIds();
         List<ProductTag> productTags = productReferenceService.getProductTags(tagIds);
 
-        //TODO:
-        List<CategoryId> categoryIds = request.getCategoryIds();
-        List<Category> categories = productReferenceService.getCategories(categoryIds);
+        List<ProductCategory> productCategories = request.toProductCategories();
+        productCategories.forEach(productCategory -> {
+            Category category = productReferenceService.getCategory(productCategory.getCategoryId());
+            productCategory.setCategory(category);
+        });
+
+
 
         Product product = Product.create(
                 seller,
@@ -50,8 +55,7 @@ public class ProductService {
                 request.toProductDetail(),
                 request.toProductPrice(),
                 request.toProductImages(),
-                categories,
-                request.toProductCategories(),
+                productCategories,
                 request.toProductData(),
                 request.toProductOptionGroup()
         );

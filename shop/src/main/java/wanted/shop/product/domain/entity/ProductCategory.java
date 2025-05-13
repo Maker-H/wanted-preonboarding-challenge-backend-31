@@ -1,11 +1,9 @@
 package wanted.shop.product.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import wanted.shop.category.domain.entity.Category;
+import wanted.shop.category.domain.entity.CategoryId;
 
 //TODO:
 @Builder
@@ -43,6 +41,10 @@ public class ProductCategory {
             this.category = category;
         }
     }
+
+    @Transient
+    @Getter @Setter
+    private CategoryId categoryId;
 
     private Boolean isPrimary;
 }

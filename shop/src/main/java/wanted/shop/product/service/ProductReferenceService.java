@@ -8,6 +8,8 @@ import wanted.shop.brand.respository.BrandRepository;
 import wanted.shop.category.domain.entity.Category;
 import wanted.shop.category.domain.entity.CategoryId;
 import wanted.shop.category.respository.CategoryRepository;
+import wanted.shop.product.domain.entity.ProductOption;
+import wanted.shop.product.domain.entity.ProductOptionId;
 import wanted.shop.product.domain.entity.ProductTag;
 import wanted.shop.seller.domain.entity.Seller;
 import wanted.shop.seller.domain.entity.SellerId;
@@ -47,11 +49,9 @@ public class ProductReferenceService {
                 }).toList();
     }
 
-    public List<Category> getCategories(List<CategoryId> categoryIds) {
-        return categoryIds.stream()
-                .map(categoryId -> {
-                    return categoryRepository.findById(categoryId)
+    public Category getCategory(CategoryId categoryId) {
+        return categoryRepository.findById(categoryId)
                             .orElseThrow(() -> new RuntimeException("없는 카테고리입니다"));
-                }).toList();
     }
+
 }

@@ -31,11 +31,12 @@ public class Product {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "shortDescription", column = @Column(name = "short_discription")),
-            @AttributeOverride(name = "fullDescription", column = @Column(name = "full_discription"))
+            @AttributeOverride(name = "shortDescription", column = @Column(name = "short_description")),
+            @AttributeOverride(name = "fullDescription", column = @Column(name = "full_description"))
     })
     private ProductData productData;
 
+    @Column(name = "status")
     private String productStatus;
 
     public ProductStatus getProductStatus() {
@@ -104,15 +105,12 @@ public class Product {
         productOptionGroups.forEach(optionGroup -> optionGroup.setProduct(this));
     }
 
-    //TODO:
-
-//    public void addProductCategories(List<ProductCategory> groups, Category category) {
-//        this.productCategories.addAll(groups);
-//        productCategories.forEach(productCategory -> {
-//            productCategory.setProduct(this);
-//            productCategory.setCategory(category);
-//        });
-//    }
+    public void addProductCategories(List<ProductCategory> groups) {
+        this.productCategories.addAll(groups);
+        productCategories.forEach(productCategory -> {
+            productCategory.setProduct(this);
+        });
+    }
 
     public static Product create(
             Seller seller,
@@ -122,8 +120,7 @@ public class Product {
             ProductDetail productDetail,
             ProductPrice productPrice,
             List<ProductImage> productImages,
-//            List<Category> categories,
-//            List<ProductCategory> productCategories,
+            List<ProductCategory> productCategories,
             ProductData productData,
             List<ProductOptionGroup> productOptionGroups
     ) {
@@ -142,7 +139,7 @@ public class Product {
         product.addProductTags(productTags);
         product.addProductImages(productImages);
         product.addProductOptions(productOptionGroups);
-//        product.addProductCategories(productCategories, categories);
+        product.addProductCategories(productCategories);
 
         return product;
     }
