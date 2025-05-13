@@ -1,10 +1,7 @@
 package wanted.shop.product.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import wanted.shop.brand.domain.entity.Brand;
 import wanted.shop.category.domain.entity.Category;
 import wanted.shop.product.dto.ProductCreateResponse;
@@ -30,6 +27,7 @@ public class Product {
         return new ProductId(this.productId);
     }
 
+    @Getter
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "shortDescription", column = @Column(name = "short_description")),
@@ -44,6 +42,7 @@ public class Product {
         return new ProductStatus(productStatus);
     }
 
+    @Getter
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "createdAt", column = @Column(name = "created_at")),
@@ -145,14 +144,6 @@ public class Product {
         return product;
     }
 
-    public ProductCreateResponse toCreateResponse() {
-        return new ProductCreateResponse(
-                this.productId,
-                this.productData.getName(),
-                this.productData.getSlug(),
-                this.productTimestamps.getCreatedAt(),
-                this.productTimestamps.getUpdatedAt()
-        );
-    }
+
 }
 

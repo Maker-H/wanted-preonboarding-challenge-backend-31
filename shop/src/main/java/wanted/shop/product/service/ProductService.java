@@ -62,7 +62,7 @@ public class ProductService {
 
         Product savedProduct = productRepository.save(product);
 
-        return savedProduct.toCreateResponse();
+        return ProductCreateResponse.from(savedProduct);
     }
 
 
