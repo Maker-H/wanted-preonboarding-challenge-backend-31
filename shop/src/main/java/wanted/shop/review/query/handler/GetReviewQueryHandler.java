@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wanted.shop.common.api.Pagination;
+import wanted.shop.common.util.ObjectMapperUtil;
 import wanted.shop.product.domain.vo.ProductId;
 import wanted.shop.review.domain.entity.Review;
 import wanted.shop.review.query.dto.ReviewPagingQuery;
@@ -30,15 +31,18 @@ public class GetReviewQueryHandler {
                 .map(rating -> ReviewSpecification.withFilters(productId, rating))
                 .orElse(ReviewSpecification.withFilters(productId));
 
-        Page<Review> result = reviewQueryRepository.findAll(spec, request.toPageable());
+        Page<Review> pagedReview = reviewQueryRepository.findAll(spec, request.toPageable());
 
-        Pagination pagination = Pagination.from(result);
+        Pagination pagination = Pagination.from(pagedReview);
 
-        List<ReviewDto> reviewDtoList = result.getContent().stream()
+        List<ReviewDto> reviewDtoList = pagedReview.getContent().stream()
                 .map(Review::toReviewDto)
                 .toList();
-        ReviewRatingSummary reviewSummaryDto = ReviewRatingSummary.from(result.getContent());
+        ReviewRatingSummary reviewSummaryDto = ReviewRatingSummary.from(pagedReview.getContent());
 
-        return new GetReviewResult(reviewDtoList, reviewSummaryDto, pagination);
+        GetReviewResult result = new GetReviewResult(reviewDtoList, reviewSummaryDto, pagination);
+        ObjectMapperUtil.validateJsonSerializable(result);
+
+        return result;
     }
 }

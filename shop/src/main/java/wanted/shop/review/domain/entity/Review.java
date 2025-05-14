@@ -61,6 +61,7 @@ public class Review {
     public void delete() {
         this.timestamps.delete();
     }
+
     public ReviewDto toReviewDto() {
         return ReviewDto.builder()
                 .id(reviewId)

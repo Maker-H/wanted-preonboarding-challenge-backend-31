@@ -3,6 +3,7 @@ package wanted.shop.review.command.handler;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wanted.shop.common.util.ObjectMapperUtil;
 import wanted.shop.product.domain.entity.Product;
 import wanted.shop.product.domain.vo.ProductId;
 import wanted.shop.review.command.respository.ReviewCommandRepository;
@@ -32,7 +33,9 @@ public class CreateReviewCommandHandler {
         Review createdReview = Review.create(user, product, reviewCommand.toReviewData());
         Review savedReview = reviewCommandRepository.save(createdReview);
 
-        return savedReview.toReviewDto();
+        ReviewDto result = savedReview.toReviewDto();
+        ObjectMapperUtil.validateJsonSerializable(result);
 
+        return result;
     }
 }

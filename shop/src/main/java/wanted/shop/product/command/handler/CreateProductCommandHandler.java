@@ -7,6 +7,7 @@ import wanted.shop.brand.domain.entity.Brand;
 import wanted.shop.brand.domain.entity.BrandId;
 import wanted.shop.category.domain.entity.Category;
 import wanted.shop.category.domain.entity.CategoryId;
+import wanted.shop.common.util.ObjectMapperUtil;
 import wanted.shop.product.command.dto.CreateProductCommand;
 import wanted.shop.product.command.dto.CreateProductResult;
 import wanted.shop.product.command.mapper.CreateProductCommandMapper;
@@ -68,7 +69,11 @@ public class CreateProductCommandHandler {
         );
 
         Product savedProduct = productCommandRepository.save(product);
-        return CreateProductResult.from(savedProduct);
+
+        CreateProductResult result = CreateProductResult.from(savedProduct);
+        ObjectMapperUtil.validateJsonSerializable(result);
+
+        return result;
     }
 
 }
