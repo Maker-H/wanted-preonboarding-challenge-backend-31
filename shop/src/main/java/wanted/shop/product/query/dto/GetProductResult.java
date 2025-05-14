@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Getter
 @Builder
-public class ProductDto {
+public class GetProductResult {
 
     private Long id;
     private String name;
@@ -56,7 +56,7 @@ public class ProductDto {
     private List<RelatedProductInfo> relatedProducts;
 
     //TODO:연관 상품 조회
-    public static ProductDto from(
+    public static GetProductResult from(
             Product product,
             Seller seller,
             Brand brand,
@@ -68,7 +68,7 @@ public class ProductDto {
             List<TagInfo> tagInfos,
             ReviewRatingSummary reviewRatingSummary
     ) {
-        return ProductDto.builder()
+        return GetProductResult.builder()
                 .id(product.getProductId().getValue())
                 .name(product.getProductData().getName())
                 .slug(product.getProductData().getSlug())

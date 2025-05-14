@@ -2,6 +2,8 @@ package wanted.shop.product.command.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import wanted.shop.brand.domain.entity.BrandId;
+import wanted.shop.seller.domain.entity.SellerId;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.List;
 public class UpdateProductCommand {
 
     private String name;
+
     private String slug;
 
     @JsonProperty("short_description")
@@ -21,12 +24,21 @@ public class UpdateProductCommand {
     @JsonProperty("seller_id")
     private Long sellerId;
 
+    public SellerId getSellerId() {
+        return new SellerId(sellerId);
+    }
+
     @JsonProperty("brand_id")
     private Long brandId;
+
+    public BrandId getBrandId() {
+        return new BrandId(brandId);
+    }
 
     private String status;
 
     private Detail detail;
+
     private Price price;
 
     private List<Category> categories;
@@ -41,6 +53,7 @@ public class UpdateProductCommand {
     @Getter
     public static class Detail {
         private double weight;
+
         private Dimensions dimensions;
 
         private String materials;

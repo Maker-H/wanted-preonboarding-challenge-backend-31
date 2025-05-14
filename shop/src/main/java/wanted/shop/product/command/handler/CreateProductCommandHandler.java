@@ -5,8 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wanted.shop.brand.domain.entity.Brand;
 import wanted.shop.brand.domain.entity.BrandId;
+import wanted.shop.category.domain.entity.Category;
+import wanted.shop.category.domain.entity.CategoryId;
 import wanted.shop.product.command.dto.CreateProductCommand;
 import wanted.shop.product.command.dto.CreateProductResult;
+import wanted.shop.product.command.mapper.CreateProductCommandMapper;
 import wanted.shop.product.domain.entity.*;
 import wanted.shop.product.command.respository.ProductCommandRepository;
 import wanted.shop.product.infra.reference.BrandLookupService;
@@ -18,12 +21,14 @@ import wanted.shop.seller.domain.entity.SellerId;
 import wanted.shop.tag.domain.entity.TagId;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
 public class CreateProductCommandHandler {
 
     private final ProductCommandRepository productCommandRepository;
+    private final CreateProductCommandMapper mapper;
 
     private final BrandLookupService brandLookupService;
     private final TagLookUpService tagLookUpService;
@@ -44,23 +49,25 @@ public class CreateProductCommandHandler {
         List<TagId> tagIds = command.getTagIds();
         List<ProductTag> productTags = tagLookUpService.getProductTags(tagIds);
 
-        List<ProductCategory> productCategories = command.toProductCategories(categoryLookupService);
+
+        Map<CategoryId, Category> categoryMap = categoryLookupService.getCategoriesByIds(
+                command.getCategories().stream().map(CreateProductCommand.ProductCategoryCommand::getCategoryId).toList()
+        );
 
         Product product = Product.create(
                 seller,
                 brand,
                 productTags,
-                command.toProductStatus(),
-                command.toProductDetail(),
-                command.toProductPrice(),
-                command.toProductImages(),
-                productCategories,
-                command.toProductData(),
-                command.toProductOptionGroup()
+                mapper.toProductStatus(command),
+                mapper.toProductDetail(command.getDetail()),
+                mapper.toProductPrice(command.getPrice()),
+                mapper.toProductImages(command),
+                mapper.toProductCategories(command, categoryMap),
+                mapper.toProductData(command),
+                mapper.toProductOptionGroups(command)
         );
 
         Product savedProduct = productCommandRepository.save(product);
-
         return CreateProductResult.from(savedProduct);
     }
 

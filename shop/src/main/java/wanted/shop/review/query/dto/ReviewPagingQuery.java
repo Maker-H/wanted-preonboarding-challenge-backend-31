@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import wanted.shop.common.dto.CommonPageRequest;
 import wanted.shop.review.domain.vo.Rating;
-import wanted.shop.review.domain.query.ReviewSortField;
+import wanted.shop.review.query.respository.spec.ReviewSortField;
 
 import java.util.Optional;
 

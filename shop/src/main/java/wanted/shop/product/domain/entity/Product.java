@@ -150,6 +150,44 @@ public class Product {
         return product;
     }
 
+    public void update(
+            ProductData productData,
+            ProductStatus productStatus,
+            Brand brand,
+            Seller seller,
+            ProductDetail productDetail,
+            ProductPrice productPrice,
+            List<Image> newImages,
+            List<ProductCategory> newCategories,
+            List<ProductTag> newTags,
+            List<ProductOptionGroup> newOptionGroups
+    ) {
+        // 값 객체
+        this.productData = productData;
+        this.productStatus = productStatus.getValue();
+        this.brand = brand;
+        this.seller = seller;
+
+        // 연관 객체는 내부 setter 호출로 관계 연결
+        setProductDetail(productDetail);
+        setProductPrice(productPrice);
+
+        // 기존 연관 컬렉션 교체
+        this.images.clear();
+        addProductImages(newImages);
+
+        this.productOptionGroups.clear();
+        addProductOptions(newOptionGroups);
+
+        this.productCategories.clear();
+        addProductCategories(newCategories);
+
+        this.productTags.clear();
+        addProductTags(newTags);
+
+        this.productTimestamps.markUpdated();
+    }
+
 
 }
 

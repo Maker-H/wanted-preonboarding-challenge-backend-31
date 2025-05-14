@@ -1,6 +1,6 @@
 package wanted.shop.product.query.projection;
 
-import wanted.shop.product.query.dto.ProductDto;
+import wanted.shop.product.query.dto.GetProductResult;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -18,8 +18,8 @@ public interface ProductOptionFlatProjection {
     Integer getOptionStock();
     Integer getOptionDisplayOrder();
 
-    static List<ProductDto.OptionGroupInfo> toResponse(List<ProductOptionFlatProjection> projections) {
-        Map<Long, List<ProductDto.OptionGroupInfo.OptionInfo>> optionGroupMap = projections.stream().collect(Collectors.groupingBy(
+    static List<GetProductResult.OptionGroupInfo> toResponse(List<ProductOptionFlatProjection> projections) {
+        Map<Long, List<GetProductResult.OptionGroupInfo.OptionInfo>> optionGroupMap = projections.stream().collect(Collectors.groupingBy(
                 ProductOptionFlatProjection::getOptionGroupId,
                 Collectors.mapping(
                         ProductOptionFlatProjection::toOptionInfo,
@@ -36,7 +36,7 @@ public interface ProductOptionFlatProjection {
                             .findFirst()
                             .orElseThrow();
 
-                    return ProductDto.OptionGroupInfo.builder()
+                    return GetProductResult.OptionGroupInfo.builder()
                             .id(optionGroup.getOptionGroupId())
                             .name(optionGroup.getOptionGroupName())
                             .displayOrder(optionGroup.getOptionGroupDisplayOrder())
@@ -47,8 +47,8 @@ public interface ProductOptionFlatProjection {
 
     }
 
-    private ProductDto.OptionGroupInfo.OptionInfo toOptionInfo() {
-        return ProductDto.OptionGroupInfo.OptionInfo.builder()
+    private GetProductResult.OptionGroupInfo.OptionInfo toOptionInfo() {
+        return GetProductResult.OptionGroupInfo.OptionInfo.builder()
                 .id(getOptionId())
                 .name(getOptionName())
                 .additionalPrice(getOptionAdditionalPrice())

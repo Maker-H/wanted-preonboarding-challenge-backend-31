@@ -15,18 +15,18 @@ public class CreateProductResult {
     private final String slug;
 
     @JsonProperty("created_at")
-    private final LocalDateTime createdAt;
+    private final String createdAt;
 
     @JsonProperty("updated_at")
-    private final LocalDateTime updatedAt;
+    private final String updatedAt;
 
     public static CreateProductResult from(Product product) {
         return new CreateProductResult(
                 product.getProductId().getValue(),
                 product.getProductData().getName(),
                 product.getProductData().getSlug(),
-                product.getProductTimestamps().getCreatedAt(),
-                product.getProductTimestamps().getUpdatedAt()
+                product.getProductTimestamps().getCreatedAt().toString(),
+                product.getProductTimestamps().getUpdatedAt().toString()
         );
     }
 }

@@ -1,6 +1,6 @@
 package wanted.shop.product.query.projection;
 
-import wanted.shop.product.query.dto.ProductDto;
+import wanted.shop.product.query.dto.GetProductResult;
 
 public interface ProductCategoryFlatProjection {
     Long getCategoryId();
@@ -11,17 +11,17 @@ public interface ProductCategoryFlatProjection {
     String getParentName();
     String getParentSlug();
 
-    default ProductDto.CategoryInfo toResponse() {
-        ProductDto.CategoryInfo.ParentCategory parentCategory = null;
+    default GetProductResult.CategoryInfo toResponse() {
+        GetProductResult.CategoryInfo.ParentCategory parentCategory = null;
         if (getCategoryId() != null) {
-            ProductDto.CategoryInfo.ParentCategory.builder()
+            GetProductResult.CategoryInfo.ParentCategory.builder()
                     .id(getParentId())
                     .name(getParentName())
                     .slug(getParentSlug())
                     .build();
         }
 
-        return ProductDto.CategoryInfo.builder()
+        return GetProductResult.CategoryInfo.builder()
                 .id(getCategoryId())
                 .name(getCategoryName())
                 .slug(getCategorySlug())

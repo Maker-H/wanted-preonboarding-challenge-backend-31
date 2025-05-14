@@ -5,13 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import wanted.shop.brand.domain.entity.BrandId;
-import wanted.shop.category.domain.entity.Category;
 import wanted.shop.category.domain.entity.CategoryId;
-import wanted.shop.product.domain.entity.*;
 import wanted.shop.product.domain.vo.ProductData;
-import wanted.shop.product.domain.vo.ProductDetailDimension;
-import wanted.shop.product.domain.vo.ProductStatus;
-import wanted.shop.product.infra.reference.CategoryLookupService;
 import wanted.shop.seller.domain.entity.SellerId;
 import wanted.shop.tag.domain.entity.TagId;
 
@@ -54,28 +49,8 @@ public class CreateProductCommand {
 
     private String status;
 
-    public ProductStatus toProductStatus() {
-        return new ProductStatus(status);
-    }
-
     @JsonProperty("categories")
-    private List<ProductCategoryRequest> categories;
-
-    public List<ProductCategory> toProductCategories(CategoryLookupService categoryLookupService) {
-        List<ProductCategory> productCategories = categories.stream().map(category -> {
-            return ProductCategory.builder()
-                    .isPrimary(category.isPrimary())
-                    .categoryId(new CategoryId(category.categoryId))
-                    .build();
-        }).toList();
-
-        productCategories.forEach(productCategory -> {
-            Category category = categoryLookupService.getCategory(productCategory.getCategoryId());
-            productCategory.setCategory(category);
-        });
-
-        return productCategories;
-    }
+    private List<ProductCategoryCommand> categories;
 
     @JsonProperty("tags")
     private List<Long> tagIds;
@@ -84,75 +59,14 @@ public class CreateProductCommand {
         return tagIds.stream().map(TagId::new).toList();
     }
 
-
     private Detail detail;
 
-    public ProductDetail toProductDetail() {
-        return ProductDetail.builder()
-                .weight(detail.getWeight())
-                .dimensions(detail.getDimension())
-                .materials(detail.getMaterials())
-                .countryOfOrigin(detail.getCountryOfOrigin())
-                .warrantyInfo(detail.getWarrantyInfo())
-                .careInstructions(detail.getCareInstructions())
-                .additionalInfo(detail.getAdditionalInfo())
-                .build();
-    }
+    private PriceCommand price;
 
-    private Price price;
-
-    public ProductPrice toProductPrice() {
-        return ProductPrice.builder()
-                .basePrice(price.getBasePrice())
-                .salePrice(price.getSalePrice())
-                .costPrice(price.getCostPrice())
-                .currency(price.getCurrency())
-                .taxRate(price.getTaxRate())
-                .build();
-    }
-
-    private List<Image> images;
-
-    public List<wanted.shop.product.domain.entity.Image> toProductImages() {
-        return images.stream()
-                .map(img -> wanted.shop.product.domain.entity.Image.builder()
-                        .url(img.getUrl())
-                        .altText(img.getAltText())
-                        .isPrimary(img.isPrimary())
-                        .displayOrder(img.getDisplayOrder())
-                        .build())
-                .toList();
-    }
-
+    private List<ImageCommand> images;
 
     @JsonProperty("option_groups")
-    private List<OptionGroup> optionGroups;
-
-    public List<ProductOptionGroup> toProductOptionGroup() {
-
-        return optionGroups.stream().map(optionGroup -> {
-
-            List<ProductOption> options = optionGroup.getOptions().stream().map(option -> {
-                return ProductOption.builder()
-                        .name(option.name)
-                        .additionalPrice(option.additionalPrice)
-                        .sku(option.sku)
-                        .stock(option.stock)
-                        .displayOrder(option.displayOrder)
-                        .build();
-            }).toList();
-
-
-            ProductOptionGroup productOptionGroup = ProductOptionGroup.builder()
-                    .displayOrder(optionGroup.displayOrder)
-                    .name(optionGroup.name)
-                    .build();
-
-            productOptionGroup.addOption(options);
-
-            return productOptionGroup;
-        }).toList();
-    }
+    private List<OptionGroupCommand> optionGroups;
 
     @Getter @Setter
     @NoArgsConstructor
@@ -160,15 +74,7 @@ public class CreateProductCommand {
         private BigDecimal weight;
 
         @JsonProperty("dimensions")
-        private Dimension dimension;
-
-        public ProductDetailDimension getDimension() {
-            return ProductDetailDimension.builder()
-                    .depth(dimension.depth)
-                    .height(dimension.height)
-                    .width(dimension.width)
-                    .build();
-        }
+        private DimensionCommand dimension;
 
         private String materials;
 
@@ -186,7 +92,7 @@ public class CreateProductCommand {
 
         @Getter @Setter
         @NoArgsConstructor
-        public static class Dimension {
+        public static class DimensionCommand {
             private int width;
             private int height;
             private int depth;
@@ -195,7 +101,7 @@ public class CreateProductCommand {
 
     @Getter @Setter
     @NoArgsConstructor
-    public static class Price {
+    public static class PriceCommand {
         @JsonProperty("base_price")
         private BigDecimal basePrice;
 
@@ -213,9 +119,13 @@ public class CreateProductCommand {
 
     @Getter @Setter
     @NoArgsConstructor
-    public static class ProductCategoryRequest {
+    public static class ProductCategoryCommand {
         @JsonProperty("category_id")
         private Long categoryId;
+
+        public CategoryId getCategoryId() {
+            return new CategoryId(categoryId);
+        }
 
         @JsonProperty("is_primary")
         private boolean isPrimary;
@@ -223,24 +133,25 @@ public class CreateProductCommand {
 
     @Getter @Setter
     @NoArgsConstructor
-    public static class OptionGroup {
+    public static class OptionGroupCommand {
         private String name;
 
         @JsonProperty("display_order")
         private int displayOrder;
 
         @JsonProperty("options")
-        private List<Option> options;
+        private List<OptionCommand> options;
 
         @Getter @Setter
         @NoArgsConstructor
-        public static class Option {
+        public static class OptionCommand {
             private String name;
 
             @JsonProperty("additional_price")
             private BigDecimal additionalPrice;
 
             private String sku;
+
             private int stock;
 
             @JsonProperty("display_order")
@@ -250,7 +161,7 @@ public class CreateProductCommand {
 
     @Getter @Setter
     @NoArgsConstructor
-    public static class Image {
+    public static class ImageCommand {
         private String url;
 
         @JsonProperty("alt_text")

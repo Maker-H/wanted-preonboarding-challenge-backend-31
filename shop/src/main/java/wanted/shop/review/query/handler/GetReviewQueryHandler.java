@@ -9,7 +9,7 @@ import wanted.shop.common.api.Pagination;
 import wanted.shop.product.domain.vo.ProductId;
 import wanted.shop.review.domain.entity.Review;
 import wanted.shop.review.query.dto.ReviewPagingQuery;
-import wanted.shop.review.domain.query.ReviewSpecification;
+import wanted.shop.review.query.respository.spec.ReviewSpecification;
 import wanted.shop.review.dto.*;
 import wanted.shop.review.query.dto.GetReviewResult;
 import wanted.shop.review.query.dto.ReviewRatingSummary;

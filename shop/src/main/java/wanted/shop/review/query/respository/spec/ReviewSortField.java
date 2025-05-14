@@ -1,4 +1,4 @@
-package wanted.shop.review.domain.query;
+package wanted.shop.review.query.respository.spec;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
