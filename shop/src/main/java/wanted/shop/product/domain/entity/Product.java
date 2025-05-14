@@ -3,6 +3,10 @@ package wanted.shop.product.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import wanted.shop.brand.domain.entity.Brand;
+import wanted.shop.product.domain.vo.ProductData;
+import wanted.shop.product.domain.vo.ProductId;
+import wanted.shop.product.domain.vo.ProductStatus;
+import wanted.shop.product.domain.vo.ProductTimestamps;
 import wanted.shop.review.domain.entity.Review;
 import wanted.shop.seller.domain.entity.Seller;
 

@@ -2,7 +2,6 @@ package wanted.shop.user.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import wanted.shop.review.domain.entity.ReviewId;
 
 import java.time.LocalDateTime;
 

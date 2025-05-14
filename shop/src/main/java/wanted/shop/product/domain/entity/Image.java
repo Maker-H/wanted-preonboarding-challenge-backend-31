@@ -2,6 +2,7 @@ package wanted.shop.product.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import wanted.shop.product.domain.vo.ImageId;
 
 @Getter
 @Builder

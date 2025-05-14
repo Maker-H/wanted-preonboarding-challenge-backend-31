@@ -4,6 +4,7 @@ import com.vladmihalcea.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Type;
+import wanted.shop.product.domain.vo.ProductDetailDimension;
 
 import java.math.BigDecimal;
 import java.util.Map;

@@ -5,8 +5,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import wanted.shop.product.domain.entity.Product;
+import wanted.shop.review.domain.vo.ReviewData;
+import wanted.shop.review.domain.vo.ReviewId;
+import wanted.shop.review.domain.vo.ReviewTimestamps;
 import wanted.shop.review.dto.ReviewDto;
-import wanted.shop.review.dto.ReviewUpdateResponse;
+import wanted.shop.review.command.dto.UpdateReviewResult;
 import wanted.shop.user.domain.User;
 
 @Getter
@@ -91,8 +94,8 @@ public class Review {
         return review;
     }
 
-    public ReviewUpdateResponse toUpdateResponse() {
-        return ReviewUpdateResponse.builder()
+    public UpdateReviewResult toUpdateResponse() {
+        return UpdateReviewResult.builder()
                 .id(this.reviewId)
                 .rating(reviewData.getRating())
                 .title(reviewData.getTitle())
