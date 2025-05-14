@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import wanted.shop.product.domain.vo.ProductOptionId;
 
 import java.math.BigDecimal;
 

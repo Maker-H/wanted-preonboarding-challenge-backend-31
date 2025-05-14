@@ -2,9 +2,9 @@ package wanted.shop.product.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.BatchSize;
 import wanted.shop.category.domain.entity.Category;
 import wanted.shop.category.domain.entity.CategoryId;
+import wanted.shop.product.domain.vo.ProductCategoryId;
 
 @Builder
 @Getter
